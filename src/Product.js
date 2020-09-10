@@ -1,8 +1,9 @@
 import React from "react";
 import "./Product.css";
+import "./CheckoutProduct.css";
 import { useStateValue } from "./StateProvider";
 
-function Product({ id, title, image, price, rating }) {
+function Product({ id, title, image, price, rating, page }) {
   const [{ basket }, dispatch] = useStateValue();
   //   console.log("this is the basket", basket);
   const addToBasket = () => {
@@ -15,18 +16,27 @@ function Product({ id, title, image, price, rating }) {
         image: image,
         price: price,
         rating: rating,
+        page: page,
       },
     });
   };
+
+  const removeFromBasket = () => {
+    dispatch({
+      type: "REMOVE_FROM_BASKET",
+      id: id,
+    });
+  };
   return (
-    <div className="Product">
-      <div className="Product-info">
+    <div className={`${page}`}>
+      {/* <img className={`${page}-image`} src={image} alt="product" /> */}
+      <div className={`${page}-info`}>
         <p>{title}</p>
-        <p className="Product-price">
+        <p className={`${page}-price`}>
           <small>$</small>
           <strong>{price}</strong>
         </p>
-        <div className="Product-rating">
+        <div className={`${page}-rating`}>
           {Array(rating)
             .fill()
             .map((_, i) => (
@@ -37,9 +47,14 @@ function Product({ id, title, image, price, rating }) {
               </p>
             ))}
         </div>
+        {page === "CheckoutProduct" && (
+          <button onClick={removeFromBasket}>Remove from Basket</button>
+        )}
       </div>
-      <img src={image} alt="product" />
-      <button onClick={addToBasket}>Add to Basket</button>
+      <img className={`${page}-image`} src={image} alt="product" />
+      {page === "Product" && (
+        <button onClick={addToBasket}>Add to Basket</button>
+      )}
     </div>
   );
 }
